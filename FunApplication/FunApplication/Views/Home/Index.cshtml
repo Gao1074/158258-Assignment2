@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<link href="~/Content/home.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<main>
+    <h1>Noteworthy</h1>
+    <div >
+        <a id="imageLink" href="@Url.Action("Details", "Games", new { id = 48 })">
+            <img id="imgSlider" src="../../Image/Baldur_row.jpg" />
+        </a>
+    </div>
+
+    <script>
+        var images = ["../../Image/Baldur_row.jpg", "../../Image/Devil_row.jpg", "../../Image/Ghost_row.jpg"];
+        var links = [
+        '@Url.Action("Details", "Games", new { id = 48 })',
+        '@Url.Action("Details", "Games", new { id = 52 })',
+        '@Url.Action("Details", "Games", new { id = 55 })'
+    ];
+        var index = 0;
+        var interval = 3000;
+
+        function changeImage() {
+            $("#imgSlider").fadeOut(1000, function () {
+                $(this).attr("src", images[index]).fadeIn(1000);
+                $("#imageLink").attr("href", links[index]);
+            });
+            index = index + 1;
+            if (index == 3) {
+                index = 0;
+            }
+        }
+
+        $(document).ready(function () {
+            setInterval(changeImage, interval);
+        });
+    </script>
+</main>

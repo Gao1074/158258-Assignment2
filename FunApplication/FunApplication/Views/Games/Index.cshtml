@@ -1,0 +1,70 @@
+﻿@*@model IEnumerable<FunApplication.Models.Game>*@
+@model FunApplication.ViewModels.GameIndexViewModel
+<link href="~/Content/Site.css" rel="stylesheet" />
+
+@using PagedList.Mvc
+
+@{
+    //ViewBag.Title = "Index";
+    ViewBag.Title = "Game";
+}
+<h2>Games</h2>
+<p>
+    @(String.IsNullOrWhiteSpace(Model.Search) ? "Showing all" : "You search for " + Model.Search + " found") @Model.Games.TotalItemCount games
+    @Html.ActionLink("Create New", "Create")
+    @using (Html.BeginForm("Index", "Games", FormMethod.Get))
+    {
+        <label>Filter by category:</label>
+        @*@Html.DropDownList("Category", "All")*@
+        @Html.DropDownListFor(vm => vm.Category, Model.CatFilterItems, "All");
+        <label>Sort By:</label>
+        @Html.DropDownListFor(vm => vm.SortBy, new SelectList(Model.Sorts, "Value", "Key"), "Default")
+        <input type="submit"class="btn btn-light " value="Filter" />
+        @*<input type="hidden" name="Search" id="Search" value="@ViewBag.Search" />*@
+        <input type="hidden" name="Search" id="Search" value="@Model.Search" />
+    }
+</p>
+<table class="table">
+    <tr>
+        <th>
+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Games.First().Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Games.First().Price)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.Games)
+    {
+        <tr class="object">
+            <td>
+                <img src="../../@item.ImagePath" width="92" height="43" alt="@item.Name" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td style="color:wheat">
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            </td>
+        </tr>
+    }
+</table>
+<div>
+    Page @(Model.Games.PageCount < Model.Games.PageNumber ? 0 :
+Model.Games.PageNumber) of @Model.Games.PageCount
+@Html.PagedListPager(Model.Games, page => Url.Action("Index", new { category = @Model.Category, Search = @Model.Search, sortBy = @Model.SortBy, page }))
+</div>
